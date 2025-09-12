@@ -1,47 +1,50 @@
 import { useState } from "react";
-
+import Card from "react-bootstrap/Card";
+import { crearEmpleado } from "../../api/empleados";
+import FormularioEmpleado from "../../componentes/empleados/FormularioEmpleado";
 import ModalMensaje from "../../componentes/ModalMensaje";
 
 const EmpleadoCrear = () => {
-  const [modal, setModal] = useState({
-    show: false,
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalContenido, setModalContenido] = useState({
     titulo: "",
     mensaje: "",
     tipo: "info",
   });
 
   const mostrarModal = (titulo, mensaje, tipo = "info") => {
-    setModal({ show: true, titulo, mensaje, tipo });
+    setModalContenido({ titulo, mensaje, tipo });
+    setModalVisible(true);
   };
 
-  const crearEmpleado = async (data) => {
+  const cerrarModal = () => {
+    setModalVisible(false);
+  };
+
+  const handleCrearEmpleado = async (data) => {
     try {
-      const response = await fetch("http://localhost:8080/api/empleados", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) throw new Error("Error al crear empleado");
-
-      mostrarModal("✅ Éxito", "Empleado creado exitosamente", "success");
+      await crearEmpleado(data);
+      mostrarModal("✅ Éxito", "Empleado creado correctamente", "success");
     } catch (error) {
       mostrarModal("❌ Error", error.message, "danger");
     }
   };
 
   return (
-    <div className="card p-4">
-      <h5 className="mb-3">🆕 Crear nuevo empleado</h5>
-      <FormularioEmpleado onSubmit={crearEmpleado} />
-      <ModalMensaje
-        show={modal.show}
-        onClose={() => setModal({ ...modal, show: false })}
-        titulo={modal.titulo}
-        mensaje={modal.mensaje}
-        tipo={modal.tipo}
-      />
-    </div>
+    <Card>
+      <Card.Header>Crear Empleado</Card.Header>
+      <Card.Body>
+        <Card.Title></Card.Title>
+        <FormularioEmpleado onSubmit={handleCrearEmpleado} />
+        <ModalMensaje
+          show={modalVisible}
+          onClose={cerrarModal}
+          titulo={modalContenido.titulo}
+          mensaje={modalContenido.mensaje}
+          tipo={modalContenido.tipo}
+        />
+      </Card.Body>
+    </Card>
   );
 };
 

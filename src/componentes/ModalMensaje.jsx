@@ -1,21 +1,23 @@
-import { Button, Modal } from "react-bootstrap";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 
 const ModalMensaje = ({ show, onClose, titulo, mensaje, tipo = "info" }) => {
-  const color = {
-    info: "primary",
-    success: "success",
-    warning: "warning",
-    danger: "danger",
-  }[tipo];
+  const variant =
+    {
+      info: "primary",
+      success: "success",
+      warning: "warning",
+      danger: "danger",
+    }[tipo] || "primary";
 
   return (
     <Modal show={show} onHide={onClose} centered>
       <Modal.Header closeButton>
-        <Modal.Title className={`text-${color}`}>{titulo}</Modal.Title>
+        <Modal.Title className={`text-${variant}`}>{titulo}</Modal.Title>
       </Modal.Header>
       <Modal.Body>{mensaje}</Modal.Body>
       <Modal.Footer>
-        <Button variant={color} onClick={onClose}>
+        <Button variant={variant} onClick={onClose}>
           Cerrar
         </Button>
       </Modal.Footer>

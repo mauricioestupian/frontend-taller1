@@ -1,4 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
+import Row from "react-bootstrap/Row";
+import { obtenerCargos } from "../../api/cargos";
+import { obtenerOficinas } from "../../api/oficinas";
 
 const FormularioEmpleado = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -10,90 +15,132 @@ const FormularioEmpleado = ({ onSubmit }) => {
     oficinaId: "",
   });
 
+  const [cargos, setCargos] = useState([]);
+  const [oficinas, setOficinas] = useState([]);
+
+  const [validated, setValidated] = useState(false);
+
+  const handleSubmit = (event) => {
+    const form = event.currentTarget;
+    if (form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+      onSubmit(formData);
+    }
+
+    setValidated(true);
+  };
+
+  useEffect(() => {
+    const cargarDatos = async () => {
+      try {
+        const cargosData = await obtenerCargos();
+        const oficinasData = await obtenerOficinas();
+        setCargos(cargosData);
+        setOficinas(oficinasData);
+      } catch (error) {
+        console.error("Error al cargar listas:", error);
+      }
+    };
+    cargarDatos();
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(formData);
-  };
-
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="mb-3">
-        <label className="form-label">Nombre</label>
-        <input
-          type="text"
-          name="nombre"
-          className="form-control"
-          value={formData.nombre}
-          onChange={handleChange}
-          required
-        />
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label">Apellido</label>
-        <input
-          type="text"
-          name="apellido"
-          className="form-control"
-          value={formData.apellido}
-          onChange={handleChange}
-          required
-        />
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label">Dirección</label>
-        <input
-          type="text"
-          name="direccion"
-          className="form-control"
-          value={formData.direccion}
-          onChange={handleChange}
-        />
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label">Teléfono</label>
-        <input
-          type="text"
-          name="telefono"
-          className="form-control"
-          value={formData.telefono}
-          onChange={handleChange}
-        />
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label">Cargo</label>
-        <input
-          type="text"
-          name="cargoId"
-          className="form-control"
-          value={formData.cargoId}
-          onChange={handleChange}
-        />
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label">Oficina</label>
-        <input
-          type="text"
-          name="oficinaId"
-          className="form-control"
-          value={formData.oficinaId}
-          onChange={handleChange}
-        />
-      </div>
-
-      <button type="submit" className="btn btn-success">
-        Guardar
-      </button>
-    </form>
+    <div className="col-md-8 align-items-center mx-auto p-4 border rounded bg-light">
+      <Form noValidate validated={validated} onSubmit={handleSubmit}>
+        {/* Campos básicos */}
+        <Row className="mb-6">
+          <Form.Group as={Col} md="6" controlId="validationCustom01">
+            <Form.Label>Nombres</Form.Label>
+            <Form.Control
+              required
+              type="text"
+              placeholder="Nombres"
+              name="nombre"
+            />
+            <Form.Control.Feedback>Datos ok!</Form.Control.Feedback>
+          </Form.Group>
+          <Form.Group as={Col} md="6" controlId="validationCustom02">
+            <Form.Label>Apellidos</Form.Label>
+            <Form.Control
+              required
+              type="text"
+              placeholder="Apellidos"
+              name="apellido"
+            />
+            <Form.Control.Feedback>Datos ok!</Form.Control.Feedback>
+          </Form.Group>
+        </Row>
+        <Row className="mb-6">
+          <Form.Group as={Col} md="6" controlId="validationCustom01">
+            <Form.Label>Dirección</Form.Label>
+            <Form.Control
+              required
+              type="text"
+              placeholder="Dirección"
+              name="direccion"
+            />
+            <Form.Control.Feedback>Datos ok!</Form.Control.Feedback>
+          </Form.Group>
+          <Form.Group as={Col} md="6" controlId="validationCustom01">
+            <Form.Label>telefono</Form.Label>
+            <Form.Control
+              required
+              type="number"
+              placeholder="Telefono"
+              name="telefono"
+            />
+            <Form.Control.Feedback>Datos ok!</Form.Control.Feedback>
+          </Form.Group>
+        </Row>
+        <Row className="mb-6">
+          {/* Select de Cargo */}
+          <Form.Group as={Col} md="6" controlId="formGridState">
+            <Form.Label>Cargo</Form.Label>
+            <Form.Select
+              name="idCargo"
+              value={formData.idCargo}
+              onChange={handleChange}
+              required
+              className="form-select mb-2"
+            >
+              <option value="">Seleccione un cargo</option>
+              {cargos.map((cargo) => (
+                <option key={cargo.id} value={cargo.id}>
+                  {cargo.cargo}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+          {/* Select de Oficina */}
+          <Form.Group as={Col} md="6" controlId="formGridState">
+            <Form.Label>Oficina</Form.Label>
+            <Form.Select
+              name="idOficina"
+              value={formData.idOficina}
+              onChange={handleChange}
+              required
+              className="form-select mb-2"
+            >
+              <option value="">Seleccione una oficina</option>
+              {oficinas.map((oficina) => (
+                <option key={oficina.id} value={oficina.id}>
+                  {oficina.nombre}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+        </Row>
+        <button type="submit" className="btn btn-success">
+          Guardar
+        </button>
+      </Form>
+    </div>
   );
 };
 

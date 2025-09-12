@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import "./App.css";
+
 export default function Home() {
   return (
     <div className="container mt-5">
@@ -61,11 +62,13 @@ export default function Home() {
 
         <div className="col-md-4 mb-4">
           <div className="card shadow-sm h-100">
-            <img
-              src="/images/asignaciones.jpg"
-              className="card-img-top"
-              alt="Asignaciones"
-            />
+            <div className=" d-flex justify-content-center pt-2 img-container ">
+              <img
+                src="/imagenes/asignaciones.png"
+                className="img-home card-img-top"
+                alt="Asignaciones"
+              />
+            </div>
             <div className="card-body">
               <h5 className="card-title">Asignaciones</h5>
               <p className="card-text">
@@ -81,9 +84,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="text-center mt-5 text-muted">
-        <small>
-          Desarrollado por Mauricio • Mentoría técnica con arquitectura limpia
-        </small>
+        <small>Desarrollado por Mauricio • SENA ADSO</small>
       </footer>
     </div>
   );
