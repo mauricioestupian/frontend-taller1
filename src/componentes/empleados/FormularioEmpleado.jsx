@@ -11,8 +11,8 @@ const FormularioEmpleado = ({ onSubmit }) => {
     apellido: "",
     direccion: "",
     telefono: "",
-    cargoId: "",
-    oficinaId: "",
+    idCargo: "",
+    idOficina: "",
   });
 
   const [cargos, setCargos] = useState([]);
@@ -21,10 +21,12 @@ const FormularioEmpleado = ({ onSubmit }) => {
   const [validated, setValidated] = useState(false);
 
   const handleSubmit = (event) => {
+    event.preventDefault();
     const form = event.currentTarget;
+
     if (form.checkValidity() === false) {
-      event.preventDefault();
       event.stopPropagation();
+    } else {
       onSubmit(formData);
     }
 
@@ -62,6 +64,8 @@ const FormularioEmpleado = ({ onSubmit }) => {
               type="text"
               placeholder="Nombres"
               name="nombre"
+              value={formData.nombre}
+              onChange={handleChange}
             />
             <Form.Control.Feedback>Datos ok!</Form.Control.Feedback>
           </Form.Group>
@@ -72,6 +76,8 @@ const FormularioEmpleado = ({ onSubmit }) => {
               type="text"
               placeholder="Apellidos"
               name="apellido"
+              value={formData.apellido}
+              onChange={handleChange}
             />
             <Form.Control.Feedback>Datos ok!</Form.Control.Feedback>
           </Form.Group>
@@ -84,6 +90,8 @@ const FormularioEmpleado = ({ onSubmit }) => {
               type="text"
               placeholder="Dirección"
               name="direccion"
+              value={formData.direccion}
+              onChange={handleChange}
             />
             <Form.Control.Feedback>Datos ok!</Form.Control.Feedback>
           </Form.Group>
@@ -94,6 +102,8 @@ const FormularioEmpleado = ({ onSubmit }) => {
               type="number"
               placeholder="Telefono"
               name="telefono"
+              value={formData.telefono}
+              onChange={handleChange}
             />
             <Form.Control.Feedback>Datos ok!</Form.Control.Feedback>
           </Form.Group>
@@ -124,7 +134,6 @@ const FormularioEmpleado = ({ onSubmit }) => {
               name="idOficina"
               value={formData.idOficina}
               onChange={handleChange}
-              required
               className="form-select mb-2"
             >
               <option value="">Seleccione una oficina</option>
