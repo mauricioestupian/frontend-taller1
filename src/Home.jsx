@@ -64,7 +64,7 @@ export default function Home() {
           <div className="card shadow-sm h-100">
             <div className=" d-flex justify-content-center pt-2 img-container ">
               <img
-                src="/imagenes/asignaciones.png"
+                src="/imagenes/asignaciones.jpg"
                 className="img-home card-img-top"
                 alt="Asignaciones"
               />
