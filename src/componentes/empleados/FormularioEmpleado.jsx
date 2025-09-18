@@ -137,6 +137,7 @@ const FormularioEmpleado = ({ onSubmit }) => {
               className="form-select mb-2"
             >
               <option value="">Seleccione una oficina</option>
+              <option value="null">Sin Oficina</option>
               {oficinas.map((oficina) => (
                 <option key={oficina.id} value={oficina.id}>
                   {oficina.nombre}
