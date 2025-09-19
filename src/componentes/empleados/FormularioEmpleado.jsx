@@ -152,7 +152,7 @@ const FormularioEmpleado = ({ onSubmit, modo, empleado = null }) => {
             </Form.Select>
           </Form.Group>
           <Form.Group as={Col} md="6" controlId="formGridOficina">
-            <Form.Label>Oficina</Form.Label>
+            <Form.Label>Oficinasss</Form.Label>
             <Form.Select
               name="idOficina"
               value={formData.idOficina}
