@@ -5,7 +5,9 @@ import Row from "react-bootstrap/Row";
 import { obtenerCargos } from "../../api/cargos";
 import { obtenerOficinas } from "../../api/oficinas";
 
-const FormularioEmpleado = ({ onSubmit }) => {
+// Componente reutilizable para crear o editar empleados
+const FormularioEmpleado = ({ onSubmit, modo, empleado = null }) => {
+  // Estado local para los campos del formulario
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
@@ -15,24 +17,28 @@ const FormularioEmpleado = ({ onSubmit }) => {
     idOficina: "",
   });
 
+  // Estado para listas de cargos y oficinas
   const [cargos, setCargos] = useState([]);
   const [oficinas, setOficinas] = useState([]);
 
+  // Estado para activar validación visual
   const [validated, setValidated] = useState(false);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-
-    if (form.checkValidity() === false) {
-      event.stopPropagation();
-    } else {
-      onSubmit(formData);
+  // Cargar datos del empleado si estamos en modo edición
+  useEffect(() => {
+    if (modo === "editar" && empleado) {
+      setFormData({
+        nombre: empleado.nombre || "",
+        apellido: empleado.apellido || "",
+        direccion: empleado.direccion || "",
+        telefono: empleado.telefono || "",
+        idCargo: empleado.idCargo || "",
+        idOficina: empleado.idOficina || "",
+      });
     }
+  }, [modo, empleado]);
 
-    setValidated(true);
-  };
-
+  // Cargar listas de cargos y oficinas al montar el componente
   useEffect(() => {
     const cargarDatos = async () => {
       try {
@@ -47,15 +53,30 @@ const FormularioEmpleado = ({ onSubmit }) => {
     cargarDatos();
   }, []);
 
+  // Actualizar estado local al cambiar cualquier campo
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Manejar envío del formulario con validación
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+
+    if (form.checkValidity() === false) {
+      event.stopPropagation();
+    } else {
+      onSubmit(formData); // Enviar datos a vista que invocó el formulario
+    }
+
+    setValidated(true);
+  };
+
   return (
     <div className="col-md-8 align-items-center mx-auto p-4 border rounded bg-light">
       <Form noValidate validated={validated} onSubmit={handleSubmit}>
-        {/* Campos básicos */}
+        {/* Campos básicos: nombre y apellido */}
         <Row className="mb-6">
           <Form.Group as={Col} md="6" controlId="validationCustom01">
             <Form.Label>Nombres</Form.Label>
@@ -82,8 +103,10 @@ const FormularioEmpleado = ({ onSubmit }) => {
             <Form.Control.Feedback>Datos ok!</Form.Control.Feedback>
           </Form.Group>
         </Row>
+
+        {/* Dirección y teléfono */}
         <Row className="mb-6">
-          <Form.Group as={Col} md="6" controlId="validationCustom01">
+          <Form.Group as={Col} md="6" controlId="validationCustom03">
             <Form.Label>Dirección</Form.Label>
             <Form.Control
               required
@@ -95,12 +118,12 @@ const FormularioEmpleado = ({ onSubmit }) => {
             />
             <Form.Control.Feedback>Datos ok!</Form.Control.Feedback>
           </Form.Group>
-          <Form.Group as={Col} md="6" controlId="validationCustom01">
-            <Form.Label>telefono</Form.Label>
+          <Form.Group as={Col} md="6" controlId="validationCustom04">
+            <Form.Label>Teléfono</Form.Label>
             <Form.Control
               required
               type="number"
-              placeholder="Telefono"
+              placeholder="Teléfono"
               name="telefono"
               value={formData.telefono}
               onChange={handleChange}
@@ -108,9 +131,10 @@ const FormularioEmpleado = ({ onSubmit }) => {
             <Form.Control.Feedback>Datos ok!</Form.Control.Feedback>
           </Form.Group>
         </Row>
+
+        {/* Selects de cargo y oficina */}
         <Row className="mb-6">
-          {/* Select de Cargo */}
-          <Form.Group as={Col} md="6" controlId="formGridState">
+          <Form.Group as={Col} md="6" controlId="formGridCargo">
             <Form.Label>Cargo</Form.Label>
             <Form.Select
               name="idCargo"
@@ -127,8 +151,7 @@ const FormularioEmpleado = ({ onSubmit }) => {
               ))}
             </Form.Select>
           </Form.Group>
-          {/* Select de Oficina */}
-          <Form.Group as={Col} md="6" controlId="formGridState">
+          <Form.Group as={Col} md="6" controlId="formGridOficina">
             <Form.Label>Oficina</Form.Label>
             <Form.Select
               name="idOficina"
@@ -146,8 +169,10 @@ const FormularioEmpleado = ({ onSubmit }) => {
             </Form.Select>
           </Form.Group>
         </Row>
+
+        {/* Botón de envío con texto dinámico */}
         <button type="submit" className="btn btn-success">
-          Guardar
+          {modo === "editar" ? "Actualizar" : "Guardar"}
         </button>
       </Form>
     </div>

@@ -7,7 +7,9 @@ export const obtenerEmpleados = async () => {
 };
 
 export const obtenerEmpleadoPorId = async (id) => {
-  const res = await fetch(`${API_URL}/${id}`);
+   const res = await fetch(`http://localhost:8080/api/empleados/${id}`, {
+    method: "GET",
+  });
   if (!res.ok) throw new Error("Empleado no encontrado");
   return res.json();
 };
@@ -33,4 +35,14 @@ export const eliminarEmpleado = async (id) => {
 
   return null; // o simplemente no retornes nada
 
+}
+
+export const actualizarEmpleado = async (id, data) => {
+  const res = await fetch(`http://localhost:8080/api/empleados/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error("Error al actualizar empleado");
+  return res.json();
 }

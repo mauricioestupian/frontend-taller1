@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { eliminarEmpleado, obtenerEmpleados } from "../../api/empleados";
+import {
+  actualizarEmpleado,
+  eliminarEmpleado,
+  obtenerEmpleadoPorId,
+  obtenerEmpleados,
+} from "../../api/empleados";
+import FormularioEmpleado from "../../componentes/empleados/FormularioEmpleado";
+import ModalMensaje from "../../componentes/ModalMensaje";
 import ModalDetalleEmpleado from "./ModalDetalleEmpleado";
 
 //hook o Componente para listar empleados con eliminación y confirmación
@@ -61,6 +68,59 @@ const Listaempleados = () => {
   // Cerrar el modal de detalle
   const cerrarDetalle = () => setMostrarDetalle(false);
 
+  // Estado y función para manejar el formulario de edición como modal
+
+  const [mostrarModalEdicion, setMostrarModalEdicion] = useState(false);
+  const [empleadoEditar, setEmpleadoEditar] = useState(null);
+
+  const abrirModalEdicion = (emp) => {
+    setEmpleadoEditar(emp); // Carga los datos del empleado
+    setMostrarModalEdicion(true); // Muestra el modal
+  };
+
+  const handleActualizarEmpleado = async (data) => {
+    try {
+      await actualizarEmpleado(empleadoEditar.id, data);
+
+      // Obtener datos completos del empleado actualizado
+      const empleadoActualizado = await obtenerEmpleadoPorId(empleadoEditar.id);
+
+      // Reemplazar el empleado en la lista con los datos actualizados
+      setEmpleados((prev) =>
+        prev.map((e) => (e.id === empleadoEditar.id ? empleadoActualizado : e))
+      );
+
+      setMostrarModalEdicion(false);
+      setEmpleadoEditar(null);
+
+      // Mostrar mensaje de éxito
+      mostrarModal(
+        "✅ Actualizado",
+        "Empleado actualizado correctamente",
+        "success"
+      );
+    } catch (error) {
+      setError("Error al actualizar el empleado");
+    }
+  };
+
+  //Modal para mostrar mensajes de error o éxito
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalContenido, setModalContenido] = useState({
+    titulo: "",
+    mensaje: "",
+    tipo: "info",
+  });
+
+  const mostrarModal = (titulo, mensaje, tipo = "info") => {
+    setModalContenido({ titulo, mensaje, tipo });
+    setModalVisible(true);
+  };
+
+  const cerrarModal = () => {
+    setModalVisible(false);
+  };
+
   return (
     <div className="card p-3">
       {/* Mostrar error si existe */}
@@ -98,12 +158,13 @@ const Listaempleados = () => {
                     Ver
                   </button>
                   {/* Enlace para editar el empleado */}
-                  <a
-                    href={`/empleados/editar/${emp.id}`}
+                  <button
                     className="btn btn-sm btn-warning me-2"
+                    onClick={() => abrirModalEdicion(emp)}
                   >
                     Editar
-                  </a>
+                  </button>
+
                   {/* Botón para eliminar (abre modal de confirmación) */}
                   <button
                     className="btn btn-sm btn-danger"
@@ -156,6 +217,34 @@ const Listaempleados = () => {
         empleado={empleadoDetalle}
         show={mostrarDetalle}
         onClose={cerrarDetalle}
+      />
+      {/*Modal para mostrar el formulario que permite editar el empleado*/}
+      <Modal
+        show={mostrarModalEdicion}
+        onHide={() => setMostrarModalEdicion(false)}
+        size="lg"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Editar Empleado</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {empleadoEditar && (
+            <FormularioEmpleado
+              modo="editar"
+              empleado={empleadoEditar}
+              onSubmit={handleActualizarEmpleado}
+            />
+          )}
+        </Modal.Body>
+      </Modal>
+      {/* Modal para mostrar mensajes de éxito o error */}
+      <ModalMensaje
+        show={modalVisible}
+        onClose={cerrarModal}
+        titulo={modalContenido.titulo}
+        mensaje={modalContenido.mensaje}
+        tipo={modalContenido.tipo}
       />
     </div>
   );

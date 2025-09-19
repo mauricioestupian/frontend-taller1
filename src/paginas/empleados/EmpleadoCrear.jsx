@@ -5,26 +5,32 @@ import FormularioEmpleado from "../../componentes/empleados/FormularioEmpleado";
 import ModalMensaje from "../../componentes/ModalMensaje";
 
 const EmpleadoCrear = () => {
+  // Estado para controlar la visibilidad del modal de retroalimentación y su contenido
   const [modalVisible, setModalVisible] = useState(false);
+
+  // Estado para definir el contenido del modal (título, mensaje, tipo)
   const [modalContenido, setModalContenido] = useState({
     titulo: "",
     mensaje: "",
-    tipo: "info",
+    tipo: "info", // puede ser "success", "danger", etc.
   });
 
+  // Función para mostrar el modal con contenido personalizado
   const mostrarModal = (titulo, mensaje, tipo = "info") => {
     setModalContenido({ titulo, mensaje, tipo });
     setModalVisible(true);
   };
 
+  // Función para cerrar el modal
   const cerrarModal = () => {
     setModalVisible(false);
   };
 
+  // Manejar la creación del empleado llamando a la API y mostrando el modal según el resultado
   const handleCrearEmpleado = async (data) => {
     try {
       await crearEmpleado(data);
-      mostrarModal("✅ Éxito", "Empleado creado correctamente", "success");
+      mostrarModal("✅ Empleado creado correctamente", "success");
     } catch (error) {
       mostrarModal("❌ Error", error.message, "danger");
     }
@@ -35,7 +41,7 @@ const EmpleadoCrear = () => {
       <Card.Header>Crear Empleado</Card.Header>
       <Card.Body>
         <Card.Title></Card.Title>
-        <FormularioEmpleado onSubmit={handleCrearEmpleado} />
+        <FormularioEmpleado onSubmit={handleCrearEmpleado} modo="crear" />
         <ModalMensaje
           show={modalVisible}
           onClose={cerrarModal}
