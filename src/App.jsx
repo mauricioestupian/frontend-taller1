@@ -5,6 +5,7 @@ import Home from "./Home";
 import EmpleadoCrear from "./paginas/empleados/EmpleadoCrear";
 import EmpleadosLayout from "./paginas/empleados/EmpleadosLayout";
 import EmpleadosList from "./paginas/empleados/EmpleadosList";
+import ProyectosLayout from "./paginas/Proyectos/ProyectosLayout";
 
 function App() {
   return (
@@ -16,7 +17,7 @@ function App() {
           <Route path="listar" element={<EmpleadosList />} />
           <Route path="crear" element={<EmpleadoCrear />} />
         </Route>
-        <Route path="/proyectos">
+        <Route path="/proyectos" element={<ProyectosLayout />}>
           <Route></Route>
         </Route>
       </Routes>

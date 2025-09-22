@@ -6,7 +6,7 @@ import {
   eliminarEmpleado,
   obtenerEmpleadoPorId,
   obtenerEmpleados,
-} from "../../api/empleados";
+} from "../../api/empleadosApi";
 import FormularioEmpleado from "../../componentes/empleados/FormularioEmpleado";
 import ModalMensaje from "../../componentes/ModalMensaje";
 import ModalDetalleEmpleado from "./ModalDetalleEmpleado";
@@ -95,7 +95,7 @@ const Listaempleados = () => {
 
       // Mostrar mensaje de éxito
       mostrarModal(
-        "✅ Actualizado",
+        "👍 Actualizado",
         "Empleado actualizado correctamente",
         "success"
       );
@@ -128,9 +128,8 @@ const Listaempleados = () => {
       {/* Mostrar spinner mientras se cargan los datos */}
       {cargando ? (
         <div className="text-center my-5">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Cargando empleados...</span>
-          </div>
+          <div className="spinner-border text-primary mb-3" role="status"></div>
+          <p className="text-muted">Cargando empleados...</p>
         </div>
       ) : (
         // Mostrar tabla de empleados cuando termina la carga

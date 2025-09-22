@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Card from "react-bootstrap/Card";
-import { crearEmpleado } from "../../api/empleados";
+import { crearEmpleado } from "../../api/empleadosApi";
 import FormularioEmpleado from "../../componentes/empleados/FormularioEmpleado";
 import ModalMensaje from "../../componentes/ModalMensaje";
 

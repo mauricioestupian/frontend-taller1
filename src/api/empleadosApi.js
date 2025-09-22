@@ -1,9 +1,17 @@
 export const obtenerEmpleados = async () => {
-  const res = await fetch('http://localhost:8080/api/empleados');
-  if (!res.ok) {
-    throw new Error('Error al obtener empleados');
+   try {
+    const res = await fetch('http://localhost:8080/api/empleados');
+     if (!res.ok) {
+      //Si el backend responde con error HTTP (404, 500…), se lanza 
+      throw new Error('Error al obtener empleados');
+    }
+    return await res.json();
+  } catch (error) {
+    // Si el backend está caído o hay error de red
+    if (error.message.includes("Failed to fetch") || error.message.includes("NetworkError")) {
+      throw new Error("No se pudo conectar con el servidor");
+    }
   }
-  return await res.json();
 };
 
 export const obtenerEmpleadoPorId = async (id) => {

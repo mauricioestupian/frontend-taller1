@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
-import { obtenerCargos } from "../../api/cargos";
-import { obtenerOficinas } from "../../api/oficinas";
+import { obtenerCargos } from "../../api/cargosApi";
+import { obtenerOficinas } from "../../api/oficinasApi";
+import ModalConexionFallida from "../../componentes/ModalConexionFallida";
 
 // Componente reutilizable para crear o editar empleados
 const FormularioEmpleado = ({ onSubmit, modo, empleado = null }) => {
@@ -37,7 +38,8 @@ const FormularioEmpleado = ({ onSubmit, modo, empleado = null }) => {
       });
     }
   }, [modo, empleado]);
-
+  // Estado para manejar errores de conexión y enviarlo al ModalConexionFallida
+  const [mensajeErrorConexion, setMensajeErrorConexion] = useState("");
   // Cargar listas de cargos y oficinas al montar el componente
   useEffect(() => {
     const cargarDatos = async () => {
@@ -46,8 +48,12 @@ const FormularioEmpleado = ({ onSubmit, modo, empleado = null }) => {
         const oficinasData = await obtenerOficinas();
         setCargos(cargosData);
         setOficinas(oficinasData);
+        //si hay un error de conexión, se muestra el modal
       } catch (error) {
-        console.error("Error al cargar listas:", error);
+        if (error != null) {
+          setMensajeErrorConexion(error.message);
+          setConexionFallida(true);
+        }
       }
     };
     cargarDatos();
@@ -72,6 +78,9 @@ const FormularioEmpleado = ({ onSubmit, modo, empleado = null }) => {
 
     setValidated(true);
   };
+
+  // Estado para manejar la conexión fallida al cargar cargos/oficinas
+  const [conexionFallida, setConexionFallida] = useState(false);
 
   return (
     <div className="col-md-8 align-items-center mx-auto p-4 border rounded bg-light">
@@ -152,7 +161,7 @@ const FormularioEmpleado = ({ onSubmit, modo, empleado = null }) => {
             </Form.Select>
           </Form.Group>
           <Form.Group as={Col} md="6" controlId="formGridOficina">
-            <Form.Label>Oficinasss</Form.Label>
+            <Form.Label>Oficinas</Form.Label>
             <Form.Select
               name="idOficina"
               value={formData.idOficina}
@@ -175,6 +184,11 @@ const FormularioEmpleado = ({ onSubmit, modo, empleado = null }) => {
           {modo === "editar" ? "Actualizar" : "Guardar"}
         </button>
       </Form>
+      <ModalConexionFallida
+        show={conexionFallida}
+        onClose={() => setConexionFallida(false)}
+        mensaje={mensajeErrorConexion}
+      />
     </div>
   );
 };
