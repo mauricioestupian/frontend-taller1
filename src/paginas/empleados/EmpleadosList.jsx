@@ -1,4 +1,4 @@
-import Listaempleados from "../../componentes/empleados/listaempleados";
+import Listaempleados from "../../componentes/empleados/listaEmpleados";
 
 export default function EmpleadosList() {
   return (

@@ -69,7 +69,7 @@ const DashboardProyectos = () => {
   // Renderizado de pestañas con contenido dividido por sección
   return (
     <Tabs
-      defaultActiveKey="home" // Pestaña activa por defecto
+      defaultActiveKey="listaActivos" // Pestaña activa por defecto
       id="justify-tab-example"
       className="mb-3"
       justify // Distribuye las pestañas de forma uniforme

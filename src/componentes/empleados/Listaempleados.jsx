@@ -80,7 +80,7 @@ const Listaempleados = () => {
 
   const handleActualizarEmpleado = async (data) => {
     try {
-      await actualizarEmpleado(empleadoEditar.id, data);
+      await actualizarEmpleado(empleadoEditar.id, data); //cosume la API para actualizar
 
       // Obtener datos completos del empleado actualizado
       const empleadoActualizado = await obtenerEmpleadoPorId(empleadoEditar.id);

@@ -38,7 +38,9 @@ const EmpleadoCrear = () => {
 
   return (
     <Card>
-      <Card.Header>Crear Empleado</Card.Header>
+      <Card.Header>
+        <h5>Crear Empleado</h5>
+      </Card.Header>
       <Card.Body>
         <Card.Title></Card.Title>
         <FormularioEmpleado onSubmit={handleCrearEmpleado} modo="crear" />

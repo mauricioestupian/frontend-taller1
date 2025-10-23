@@ -1,6 +1,9 @@
 // Hooks de React para manejar estado y efectos
 import { useEffect, useState } from "react";
 
+//un hook de React Router para navegación programática
+import { useNavigate } from "react-router-dom";
+
 // Función que obtiene los proyectos desde el backend
 import { obtenerProyectos } from "../../api/proyectosApi";
 
@@ -10,6 +13,9 @@ import ModalMensaje from "../ModalMensaje";
 
 // Componente principal que lista los proyectos
 const ListaProyectos = () => {
+  // Hook de React Router para navegación programática
+  const navegar = useNavigate();
+
   // Estado para almacenar los proyectos obtenidos
   const [proyectos, setProyectos] = useState([]);
 
@@ -22,8 +28,8 @@ const ListaProyectos = () => {
 
   // Estados para ordenamiento por fechas
   const [campoOrdenActivo, setCampoOrdenActivo] = useState("inicio"); // "inicio" o "fin"
-  const [ordenFechaInicioAsc, setOrdenFechaInicioAsc] = useState(true); // true = ascendente
-  const [ordenFechaFinAsc, setOrdenFechaFinAsc] = useState(true); // true = ascendente
+  const [ordenFechaInicio, setOrdenFechaInicio] = useState(true); // true = ascendente
+  const [ordenFechaFin, setOrdenFechaFin] = useState(true); // true = ascendente
 
   // Filtrado y ordenamiento de los proyectos antes de renderizar
   const proyectosFiltrados = [...proyectos]
@@ -33,11 +39,11 @@ const ListaProyectos = () => {
       if (campoOrdenActivo === "inicio") {
         const fechaA = new Date(a.fechaInicio);
         const fechaB = new Date(b.fechaInicio);
-        return ordenFechaInicioAsc ? fechaA - fechaB : fechaB - fechaA;
+        return ordenFechaInicio ? fechaA - fechaB : fechaB - fechaA;
       } else if (campoOrdenActivo === "fin") {
         const fechaA = new Date(a.fechaFin);
         const fechaB = new Date(b.fechaFin);
-        return ordenFechaFinAsc ? fechaA - fechaB : fechaB - fechaA;
+        return ordenFechaFin ? fechaA - fechaB : fechaB - fechaA;
       }
       return 0; // sin orden si no hay campo activo
     });
@@ -90,11 +96,11 @@ const ListaProyectos = () => {
               <button
                 className="btn btn-sm btn-link ms-1"
                 onClick={() => {
-                  setOrdenFechaInicioAsc(!ordenFechaInicioAsc);
+                  setOrdenFechaInicio(!ordenFechaInicio);
                   setCampoOrdenActivo("inicio");
                 }}
               >
-                {ordenFechaInicioAsc ? "↓" : "↑"}
+                {ordenFechaInicio ? "↓" : "  ↑"}
               </button>
             </th>
             <th>
@@ -103,11 +109,11 @@ const ListaProyectos = () => {
               <button
                 className="btn btn-sm btn-link ms-1"
                 onClick={() => {
-                  setOrdenFechaFinAsc(!ordenFechaFinAsc);
+                  setOrdenFechaFin(!ordenFechaFin);
                   setCampoOrdenActivo("fin");
                 }}
               >
-                {ordenFechaFinAsc ? "↓" : "↑"}
+                {ordenFechaFin ? "↓" : "↑"}
               </button>
             </th>
             <th>Estado</th>
@@ -123,22 +129,21 @@ const ListaProyectos = () => {
               <td>{proyecto.fechaFin}</td>
               <td>{proyecto.estado}</td>
               <td>
-                {/* Acciones: ver, editar, eliminar */}
+                {/* Acciones: ver, eliminar */}
                 <button
                   className="btn btn-sm btn-info me-2"
-                  onClick={() => verDetalle(emp)} // ⚠️ 'emp' debería ser 'proyecto'
+                  onClick={() =>
+                    navegar(`vistaproyecto/${proyecto.id}`, {
+                      state: { proyecto },
+                    })
+                  }
                 >
                   Ver
                 </button>
-                <button
-                  className="btn btn-sm btn-warning me-2"
-                  onClick={() => abrirModalEdicion(emp)} // ⚠️ 'emp' debería ser 'proyecto'
-                >
-                  Editar
-                </button>
+
                 <button
                   className="btn btn-sm btn-danger"
-                  onClick={() => abreModalEliminar(emp)} // ⚠️ 'emp' debería ser 'proyecto'
+                  onClick={() => abreModalEliminar(proyecto)}
                 >
                   Eliminar
                 </button>

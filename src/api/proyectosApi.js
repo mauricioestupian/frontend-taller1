@@ -16,3 +16,31 @@ export const obtenerProyectos = async () => {
     throw error;
   }
 };
+
+export const obtenerProyectoPorId = async (id) => {
+  const response = await fetch(`${BASE_URL}/api/proyectos/${id}`);
+  if (!response.ok) throw new Error("Error al obtener el proyecto");
+  return await response.json();
+};
+
+export const actualizarProyecto = async (id, datos) => {
+  const response = await fetch(`${BASE_URL}/api/proyectos/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(datos),
+  });
+  if (!response.ok) throw new Error("Error al actualizar el proyecto");
+  return await response.json();
+};
+
+export const crearProyecto = async (datos) => {
+  const response = await fetch(`${BASE_URL}/api/proyectos`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(datos),
+  });
+  if (!response.ok) throw new Error("Error al crear el proyecto");
+  return await response.json();
+}
+
+

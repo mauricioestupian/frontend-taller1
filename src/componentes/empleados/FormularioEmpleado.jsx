@@ -88,7 +88,7 @@ const FormularioEmpleado = ({ onSubmit, modo, empleado = null }) => {
         {/* Campos básicos: nombre y apellido */}
         <Row className="mb-6">
           <Form.Group as={Col} md="6" controlId="validationCustom01">
-            <Form.Label>Nombres</Form.Label>
+            <Form.Label>Nombressssss</Form.Label>
             <Form.Control
               required
               type="text"
@@ -103,7 +103,7 @@ const FormularioEmpleado = ({ onSubmit, modo, empleado = null }) => {
             <Form.Label>Apellidos</Form.Label>
             <Form.Control
               required
-              type="text"
+              type="email"
               placeholder="Apellidos"
               name="apellido"
               value={formData.apellido}
